@@ -16,6 +16,7 @@ def add(storage: Storage):
 
 def main():
     storage = Storage()
+    
     while True:
         menu()
         option = ("Select an option: ")

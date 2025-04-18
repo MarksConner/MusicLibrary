@@ -1,13 +1,16 @@
 from storage import Storage
 import unittest
+import os
 
 class TestStorage(unittest.TestCase):
     def setUp(self):
-        self.storage = Storage()
-        #self.storage.add_album("J. Cole", "Forest Hills Drive")
+        self.test_file = "test_library.json"
+        self.storage = Storage(filename="test_library.json")
+        self.storage.add_album("J. Cole", "Forest Hills Drive")
 
     def tearDown(self):
-        del self.storage
+        if os.path.exists(self.test_file):
+            os.remove(self.test_file)
 
     #add_album tests
     def test_add_new_artist(self):

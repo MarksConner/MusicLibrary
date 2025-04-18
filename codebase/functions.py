@@ -6,8 +6,8 @@ def menu():
     print("1. Add an album to your collection.")
     print("2. Remove an album from your collection.")
     print("3. View total library")
-    print("4. View total number of records in your collection.")
-    print("5. View total number of artists in your collection.")
+    print("4. View total number of artists in your collection.")
+    print("5. View total number of records in your collection.")
     print("0. Exit.\n")
 
 def add(storage: Storage):

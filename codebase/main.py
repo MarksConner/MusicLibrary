@@ -16,11 +16,14 @@ def main():
                 remove(storage)
 
             case "3":
-                pass
+                storage.total_library()
+
             case "4":
-                print(storage.total_records())
+                storage.total_artists()
+
             case "5":
-                pass
+                storage.total_albums()
+
             case "0":
                 break
 

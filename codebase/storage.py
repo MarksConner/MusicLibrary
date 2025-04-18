@@ -1,24 +1,30 @@
 from typing import Dict, List, Optional
 import json
 class Storage:
-    def __init__(self, filename: str = "library.json") -> None:
+    def __init__(self, library: Optional[Dict[str, List[str]]] = None, filename: str = "library.json") -> None:
         self._filename = filename
         self._library: Dict[str, List[str]] = {}
-        self.load_from_file()
+        if library is None:
+            self._library: Dict[str, List[str]] = {}
+            self.load_from_file()
+        else:
+            self._library = library
 
 #----------------------------------------------------------------------------------------------#
     #File IO stuff
     def save_to_file(self) -> None:
         try:
             with open(self._filename, 'w') as file:
-                json.dump(self._library, file, indent=4)
-        except Exception as e:
-            print(f"Error saving to file: {e}")
+                json.dump(self._library, file, indent=2)
+
+        except Exception as err:
+            print(f"Error saving to file: {err}")
 
     def load_from_file(self) -> None:
         try:
             with open(self._filename, 'r') as file:
                 self._library = json.load(file)
+
         except FileNotFoundError:
             self._library = {}
         except json.JSONDecodeError:
@@ -48,7 +54,7 @@ class Storage:
             self._library[artist].append(record)
         else:
             self._library[artist] = [record]
-        #self.save_to_file()
+        self.save_to_file()
     
     def remove_album(self, artist: str, record: str) -> str:
         if artist not in self.library:
@@ -58,17 +64,34 @@ class Storage:
     
         if len(self.library[artist]) > 1:
             self.library[artist].remove(record)
+            self.save_to_file()
             return "Removed '{record}' from {artist}."
         else:
             del self.library[artist]
+            self.save_to_file()
             return "Removed '{record}' from {artist}. No more records in {artist}. Removed artist from library."
-        #self.save_to_file()
+        
+    def total_library(self):
+        if not self._library:
+            print("Library is empty.")
+            return
+
+        for artist, albums in self._library.items():
+            album_list = ", ".join(albums)
+            print(f"{artist}: {album_list}")
     
-    def total_records(self) -> int:
-        return sum(len(albums) for albums in self._library.values())
+    def total_albums(self) -> None:
+        print("\n")
+        for albums in self._library.values():
+            for album in albums:
+                print(f"- {album}")
+        print("Total records:", sum(len(albums) for albums in self._library.values()))
     
     def total_artists(self):
-        return len(self._library)
+        print("\n")
+        for artist in self._library.keys():
+            print(f"- {artist}")
+        print("Total number of Artists:", len(self._library))
     
     def search_by_artist(artist_name: str) -> None:#with partial matching
         pass

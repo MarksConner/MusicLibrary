@@ -31,26 +31,26 @@ class TestStorage(unittest.TestCase):
         result = self.storage.remove_album("J. Cole", "Forest Hills Drive")
         self.assertNotIn("J. Cole", self.storage.library)
         self.assertEqual(self.storage.library, {})
-        self.assertTrue(result)
+        self.assertEqual(result, "Removed '{record}' from {artist}. No more records in {artist}. Removed artist from library.")
     
     def test_remove_nonexisting(self):
         result = self.storage.remove_album("Pierce the Veil", "Collide with The Sky")
-        self.assertFalse(result)
+        self.assertEqual(result, "Artist does not exist, removal failed.")
 
     def test_remove_wrong_record(self):
         result = self.storage.remove_album("J. Cole", "Born Sinner")
-        self.assertFalse(result)
+        self.assertEqual(result, "Record does not exist for this artist, removal failed.")
 
     def test_remove_multiple(self):
         self.storage.add_album("Pierce the Veil", "Collide with the Sky")
         result = self.storage.remove_album("J. Cole", "Forest Hills Drive")
-        self.assertTrue(result)
+        self.assertEqual(result, "Removed '{record}' from {artist}. No more records in {artist}. Removed artist from library.")
         self.assertEqual(self.storage.library, {"Pierce the Veil": ["Collide with the Sky"]}) 
     
     def test_remove_same_artist(self):
         self.storage.add_album("J. Cole", "Born Sinner")
         result = self.storage.remove_album("J. Cole", "Born Sinner")
-        self.assertTrue(result)
+        self.assertEqual(result, "Removed '{record}' from {artist}.")
         self.assertEqual(self.storage.library["J. Cole"], ["Forest Hills Drive"])
 
     #extra functionalities

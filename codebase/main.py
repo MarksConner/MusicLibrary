@@ -18,7 +18,7 @@ def main():
             case "3":
                 pass
             case "4":
-                pass
+                print(storage.total_records())
             case "5":
                 pass
             case "0":

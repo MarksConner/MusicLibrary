@@ -1,9 +1,10 @@
 from storage import Storage
 import unittest
+
 class TestStorage(unittest.TestCase):
     def setUp(self):
         self.storage = Storage()
-        self.storage.add_album("J. Cole", "Forest Hills Drive")
+        #self.storage.add_album("J. Cole", "Forest Hills Drive")
 
     def tearDown(self):
         del self.storage

@@ -71,7 +71,7 @@ class Storage:
             self.save_to_file()
             return "Removed '{record}' from {artist}. No more records in {artist}. Removed artist from library."
         
-    def total_library(self):
+    def total_library(self) -> None:
         if not self._library:
             print("Library is empty.")
             return
@@ -87,7 +87,7 @@ class Storage:
                 print(f"- {album}")
         print("Total records:", sum(len(albums) for albums in self._library.values()))
     
-    def total_artists(self):
+    def total_artists(self) -> None:
         print("\n")
         for artist in self._library.keys():
             print(f"- {artist}")

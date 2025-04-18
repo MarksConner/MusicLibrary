@@ -1,5 +1,7 @@
 from storage import Storage
 import unittest
+from unittest.mock import patch
+from io import StringIO
 import os
 
 class TestStorage(unittest.TestCase):
@@ -58,15 +60,25 @@ class TestStorage(unittest.TestCase):
         self.assertEqual(self.storage.library["J. Cole"], ["Forest Hills Drive"])
 
     #extra functionalities
-    def test_total_records(self):
+    def test_total_albums(self):
         self.storage.add_album("J. Cole", "Born Sinner")
         self.storage.add_album("Pierce the Veil", "Collide with the Sky")
-        self.assertEqual(3, self.storage.total_records())
+        
+        expected_output = "- Forest Hills Drive\n- Born Sinner\n- Collide with the Sky\nTotal records: 3\n"
+
+        with patch('sys.stdout', new=StringIO()) as fake_out:
+            self.storage.total_albums()
+            self.assertEqual(fake_out.getvalue().strip(), expected_output.strip())
 
     def test_total_artists(self):
         self.storage.add_album("J. Cole", "Born Sinner")
         self.storage.add_album("Pierce the Veil", "Collide with the Sky")
-        self.assertEqual(2, self.storage.total_artists())
+        
+        expected_output = "\n- J. Cole\n- Pierce the Veil\nTotal number of Artists: 2\n"
+
+        with patch('sys.stdout', new=StringIO()) as fake_out:
+            self.storage.total_artists()
+            self.assertEqual(fake_out.getvalue().strip(), expected_output.strip())
 
 if __name__ == '__main__':
     unittest.main()

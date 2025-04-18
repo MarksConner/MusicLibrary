@@ -28,19 +28,18 @@ class Storage:
     
     def remove_album(self, artist: str, record: str) -> bool:
         if artist not in self.library:
-            print("Artist does not exist")
             return False
         if record not in self.library[artist]:
-            print("Record does not exist for this artist")
+            print("Record does not exist for this artist, removal failed.")
             return False
     
         if len(self.library[artist]) > 1:
             self.library[artist].remove(record)
-            print(f"Removed '{record}' from {artist}.")
+            print(f"Removed '{record}' from {artist}.\n")
         else:
             del self.library[artist]
             print(f"Removed '{record}' from {artist}.")
-            print(f"No more records in {artist}. Removed artist from library.")
+            print(f"No more records in {artist}. Removed artist from library.\n")
         return True
     
     def total_records(self) -> int:

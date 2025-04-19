@@ -47,33 +47,45 @@ class TestStorage(unittest.TestCase):
 
     #remove_album tests
     def test_remove(self):
-        result = self.storage.remove_album("J. Cole", "2014 Forest Hills Drive")
+        self.mock_spotify.search_album.return_value = [{"name": "2014 Forest Hills Drive", "artists": [{"name": "J. Cole"}]}]
+        with patch("builtins.input", return_value = "1"):
+            result = self.storage.remove_album("J. Cole", "2014 Forest Hills Drive")
         self.assertNotIn("J. Cole", self.storage.library)
         self.assertEqual(self.storage.library, {})
-        self.assertEqual(result, "Removed '{record}' from {artist}. No more records in {artist}. Removed artist from library.")
+        self.assertEqual(result, "Removed '2014 Forest Hills Drive' from J. Cole. No more records left for this artist, so they were removed from your library.")
     
     def test_remove_nonexisting(self):
-        result = self.storage.remove_album("Pierce the Veil", "Collide with The Sky")
-        self.assertEqual(result, "Artist does not exist, removal failed.")
+        self.mock_spotify.search_album.return_value = [{"name": "Collide with the Sky", "artists": [{"name": "Pierce the Veil"}]}]
+        with patch("builtins.input", return_value='1'):
+            result = self.storage.remove_album("Pierce the Veil", "Collide with The Sky")
+        self.assertEqual(result, "Artist 'Pierce the Veil' not found in your library.")
 
     def test_remove_wrong_record(self):
-        result = self.storage.remove_album("J. Cole", "Born Sinner")
-        self.assertEqual(result, "Record does not exist for this artist, removal failed.")
+        self.mock_spotify.search_album.return_value = [{"name": "Born Sinner", "artists": [{"name": "J. Cole"}]}]
+        with patch("builtins.input", return_value='1'):
+            result = self.storage.remove_album("J. Cole", "Born Sinner")
+        self.assertEqual(result, "Album 'Born Sinner' not found for artist 'J. Cole' in your library.")
 
     def test_remove_multiple(self):
         self.mock_spotify.search_album.return_value = [{'name': "Collide with the Sky", "artists": [{"name": "Pierce the Veil"}]}]
         with patch("builtins.input", return_value = '1'):
             self.storage.add_album("Pierce the Veil", "Collide with the Sky")
-        result = self.storage.remove_album("J. Cole", "2014 Forest Hills Drive")
-        self.assertEqual(result, "Removed '{record}' from {artist}. No more records in {artist}. Removed artist from library.")
+
+        self.mock_spotify.search_album.return_value = [{"name": "2014 Forest Hills Drive", "artists": [{"name": "J. Cole"}]}]
+        with patch("builtins.input", return_value = "1"):
+            result = self.storage.remove_album("J. Cole", "2014 Forest Hills Drive")
+        self.assertEqual(result, "Removed '2014 Forest Hills Drive' from J. Cole. No more records left for this artist, so they were removed from your library.")
         self.assertEqual(self.storage.library, {"Pierce the Veil": ["Collide with the Sky"]}) 
     
     def test_remove_same_artist(self):
         self.mock_spotify.search_album.return_value = [{'name': "Born Sinner", "artists": [{"name": "J. Cole"}]}]
         with patch("builtins.input", return_value = '1'):
             self.storage.add_album("J. Cole", "Born Sinner")
-        result = self.storage.remove_album("J. Cole", "Born Sinner")
-        self.assertEqual(result, "Removed '{record}' from {artist}.")
+        
+        self.mock_spotify.search_album.return_value = [{"name": "Born Sinner", "artists": [{"name": "J. Cole"}]}]
+        with patch("builtins.input", return_value='1'):
+            result = self.storage.remove_album("J. Cole", "Born Sinner")
+        self.assertEqual(result, "Removed 'Born Sinner' from J. Cole.")
         self.assertEqual(self.storage.library["J. Cole"], ["2014 Forest Hills Drive"])
 
     #extra functionalities

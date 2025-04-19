@@ -31,27 +31,17 @@ def remove(storage: Storage):
             print("Nothing in your current collection.\n")
             break
 
-        print("\nArtists in your library:")
-        for artist in storage.library:
-            print(f"- {artist}")
-
-        artist = input("\nEnter the artist's name or type '00' to cancel: ").strip()
-        if artist == '00':
-            break
-        if artist not in storage.library:
-            print("Artist does not exist, removal failed.")
-            continue
-
-        print(f"\nAlbums by {artist}:")
-        for record in storage.library.get(artist, []):
-            print(f"- {record}")
-
-        record = input("\nEnter the album to remove or type '00' to cancel: ").strip()
-        if record.lower() == '00':
+        artist_input = input("Enter the artist name or type '00' to cancel: ").strip()
+        if artist_input == '00':
             break
 
-        storage.remove_album(artist, record)
+        record_input = input("Enter the album name or type '00' to cancel: ").strip()
+        if record_input == '00':
+            break
 
-        again = input("\nRemove another album? (y/n): ").strip().lower()
-        if again.lower() != 'y':
+        result = storage.remove_album(artist_input, record_input)
+        print(result)
+
+        more = input("\nRemove another album? (y/n): ").strip().lower()
+        if more != 'y':
             break

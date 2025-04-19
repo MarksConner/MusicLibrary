@@ -78,7 +78,7 @@ class Storage:
             #adding the album
             if artist in self._library:
                 if record in self._library[artist]:
-                    print("Album already exists for this artist")
+                    raise ValueError("Album already exists for this artist")
                 self._library[artist].append(record)
             else:
                 self._library[artist] = [record]

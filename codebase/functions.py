@@ -17,7 +17,7 @@ def add(storage: Storage):
         try:
             storage.add_album(artist, record)
         except ValueError as err:
-            print("Error: {err}")
+            print(f"Error: {err}")
 
         clear = input("Add another album? y/n\n")
         if clear.lower() == "n":

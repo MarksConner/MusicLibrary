@@ -1,8 +1,10 @@
 from storage import Storage
 from functions import menu, add, remove
+from spotify_api import Spotify
 
 def main():
-    storage = Storage()
+    spotify = Spotify()
+    storage = Storage(spotify=spotify)
     
     while True:
         menu()

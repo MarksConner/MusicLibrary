@@ -1,9 +1,14 @@
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth
 from typing import Dict, List, Optional
 import json
+from spotify_api import Spotify
+
 class Storage:
-    def __init__(self, library: Optional[Dict[str, List[str]]] = None, filename: str = "library.json") -> None:
+    def __init__(self, library: Optional[Dict[str, List[str]]] = None, filename: str = "library.json", spotify = None) -> None:
         self._filename = filename
         self._library: Dict[str, List[str]] = {}
+        self.spotify = spotify if spotify else Spotify()
         if library is None:
             self._library: Dict[str, List[str]] = {}
             self.load_from_file()
@@ -28,7 +33,7 @@ class Storage:
         except FileNotFoundError:
             self._library = {}
         except json.JSONDecodeError:
-            print("Library file is corrupted. Starting with an empty library.")
+            print("Library file is corrupted. Creating a new library.")
             self._library = {}
     
 #----------------------------------------------------------------------------------------------#
@@ -48,13 +53,36 @@ class Storage:
 #----------------------------------------------------------------------------------------------#
     #functionalities
     def add_album(self, artist: str, record: str) -> None:
-        if artist in self.library:
-            if record in self.library[artist]:
-                raise ValueError("Album already exists for this artist")
-            self._library[artist].append(record)
-        else:
-            self._library[artist] = [record]
-        self.save_to_file()
+        #spotify checking for partial mathes
+        if self.spotify:
+            matches = self.spotify.search_album(artist, record) #edit search_album in sporify_api.py for matching changes
+            if matches is None:
+                raise ValueError("No album with this name is found.")
+            #printing out the options
+            for items, album in enumerate(matches):
+                name = album['name']
+                artist_name = album['artists'][0]['name']
+                print(f"{items + 1}. {name} by {artist_name}")
+            choice = input("Enter the number of the correct album or to cancel type 0: ")
+            choice = int(choice) - 1
+            try:
+                if choice < 0 or choice >= len(matches):
+                    return
+                selected = matches[choice]
+                artist = selected['artists'][0]['name']
+                record = selected['name']
+            except ValueError:
+                print("Invalid input.")
+                return
+            
+            #adding the album
+            if artist in self._library:
+                if record in self._library[artist]:
+                    print("Album already exists for this artist")
+                self._library[artist].append(record)
+            else:
+                self._library[artist] = [record]
+            self.save_to_file()
     
     def remove_album(self, artist: str, record: str) -> str:
         if artist not in self.library:

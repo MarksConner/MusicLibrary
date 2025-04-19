@@ -14,7 +14,10 @@ def add(storage: Storage):
     while True:
         artist = input("What is the artist's name?\n")
         record = input("What is the record's name?\n")
-        storage.add_album(artist, record)
+        try:
+            storage.add_album(artist, record)
+        except ValueError as err:
+            print("Error: {err}")
 
         clear = input("Add another album? y/n\n")
         if clear.lower() == "n":

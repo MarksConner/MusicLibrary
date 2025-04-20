@@ -46,7 +46,7 @@ class TestStorage(unittest.TestCase):
         self.assertIn("J. Cole", self.storage.library)
         self.assertIn("Pierce the Veil", self.storage.library)
 
-    #remove_album tests
+    #remove_album tests 
     def test_remove(self):
         self.mock_spotify.search_album.return_value = [{"name": "2014 Forest Hills Drive", "artists": [{"name": "J. Cole"}]}]
         result = self.storage.remove_album("J. Cole", "2014 Forest Hills Drive")

@@ -1,13 +1,13 @@
 from storage import Storage
+from spotify_api import Spotify
 
 #not needed because gui
 def menu():
     print("\nVinyl Record Collection\n")
     print("1. Add an album to your collection.")
     print("2. Remove an album from your collection.")
-    print("3. View total library")
-    print("4. View total number of artists in your collection.")
-    print("5. View total number of records in your collection.")
+    print("3. Search for a song.")
+    print("4. View total library.")
     print("0. Exit.\n")
 
 def add(storage: Storage):
@@ -45,3 +45,33 @@ def remove(storage: Storage):
         more = input("\nRemove another album? (y/n): ").strip().lower()
         if more != 'y':
             break
+
+def track_search(storage: Storage):
+    while True:
+        song_input = input("What song would you like to look for? Or 00 to exit: ").strip()
+        if song_input == '00':
+            break
+
+        artist_input = input("What artist is the song by? Or 00 to exit: ").strip()
+        if artist_input == '00':
+            break
+
+        song, artist = storage.song(song_input, artist_input)
+        if not song or not artist:
+            continue
+        
+        updated_match = storage.spotify.search_song(song, artist)
+        selected = updated_match[0]
+        album_name = selected['album']['name']
+        artist_name = selected['artists'][0]['name']
+
+        print(f"\n{song} is on {album_name} by {artist_name}")
+        if artist in storage.library and album_name in storage.library[artist]:
+            print(f"{album_name} is in your collection\n")
+        else:
+            print(f"{album_name} is not in your collection\n")
+        
+        repeat = input("Search for another song? y/n: ")
+        if repeat.lower() != 'y':
+            break
+        

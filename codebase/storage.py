@@ -1,6 +1,6 @@
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 import json
 from spotify_api import Spotify
 import difflib
@@ -51,10 +51,10 @@ class Storage:
             raise ValueError("Library must be a dictionary")
         
 #----------------------------------------------------------------------------------------------#
-    #Function to search through spotify's api
-    def spotify_search(self, artist: str, record: str):
+    #Functions to search through spotify's api
+    def spotify_search(self, artist: str, record: str) -> Tuple[str, str]:
         if not self.spotify:
-            return None, None  # Or optionally raise an error
+            return None, None
 
         matches = self.spotify.search_album(artist, record)
         if not matches:
@@ -77,6 +77,32 @@ class Storage:
             return artist, record
         except (ValueError, IndexError):
             print("Invalid input.")
+            return None, None
+        
+    def song(self, song: str, artist: str) -> Tuple[str, str]:
+        if not self.spotify:
+            return None, None
+        matches = self.spotify.search_song(song, artist)
+        if not matches:
+            print("No song with this name is found on Spotify.")
+            return None, None
+        
+        print("\nMatching songs:")
+        for i, song_matches in enumerate(matches):
+            song_name = song_matches["name"]
+            artist_name = song_matches["artists"][0]["name"]
+            print(f"{i + 1}. {song_name} by {artist_name}")
+        
+        try:
+            choice = int(input("Enter the number of the correct song or type 0 to cancel: ")) - 1
+            if choice < 0 or choice >= len(matches[:5]):
+                return None, None
+            selected = matches[choice]
+            song = selected['name']
+            artist = selected['artists'][0]['name']
+            return song, artist
+        except (ValueError, IndexError):
+            print("Invalid input")
             return None, None
 
 #----------------------------------------------------------------------------------------------#
@@ -103,7 +129,6 @@ class Storage:
 
         if artist not in self.library:
             return f"Artist '{artist}' not found in your library."
-
         if record not in self.library[artist]:
             return f"Album '{record}' not found for artist '{artist}' in your library."
 
@@ -116,17 +141,20 @@ class Storage:
             self.save_to_file()
             return f"Removed '{record}' from {artist}. No more records left for this artist, so they were removed from your library."
 
-        
     def total_library(self) -> None:
         if not self._library:
             print("Library is empty.")
             return
-
+        print("\n")
         for artist, albums in self._library.items():
             album_list = ", ".join(albums)
             print(f"{artist}: {album_list}")
-    
-    def total_albums(self) -> None:
+        print("\nTotal number of Artists:", len(self._library))
+        print("Total records:", sum(len(albums) for albums in self._library.values()))
+
+
+    #removed for menu simplicity
+    '''def total_albums(self) -> None:
         print("\n")
         for albums in self._library.values():
             for album in albums:
@@ -137,6 +165,5 @@ class Storage:
         print("\n")
         for artist in self._library.keys():
             print(f"- {artist}")
-        print("Total number of Artists:", len(self._library))
+        print("Total number of Artists:", len(self._library))'''
     
-    #find songs on albums with a music api

@@ -1,5 +1,5 @@
 from storage import Storage
-from functions import menu, add, remove
+from functions import menu, add, remove, track_search
 from spotify_api import Spotify
 
 def main():
@@ -18,13 +18,10 @@ def main():
                 remove(storage)
 
             case "3":
-                storage.total_library()
+                track_search(storage)
 
             case "4":
-                storage.total_artists()
-
-            case "5":
-                storage.total_albums()
+                storage.total_library()
 
             case "0":
                 break

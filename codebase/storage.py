@@ -1,9 +1,7 @@
-import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from typing import Dict, List, Optional, Tuple
 import json
 from spotify_api import Spotify
-import difflib
 
 class Storage:
     def __init__(self, library: Optional[Dict[str, List[str]]] = None, filename: str = "library.json", spotify = None) -> None:
@@ -52,7 +50,7 @@ class Storage:
         
 #----------------------------------------------------------------------------------------------#
     #Functions to search through spotify's api
-    def spotify_search(self, artist: str, record: str) -> Tuple[str, str]:
+    def album(self, artist: str, record: str) -> Tuple[str, str]:
         if not self.spotify:
             return None, None
 
@@ -109,7 +107,7 @@ class Storage:
     #functionalities
     def add_album(self, artist: str, record: str) -> None:
         #spotify checking for partial mathes
-        artist, record = self.spotify_search(artist, record)
+        artist, record = self.album(artist, record)
         if not artist or not record:
             return
             
@@ -123,7 +121,7 @@ class Storage:
         self.save_to_file()
     
     def remove_album(self, artist: str, record: str) -> str:
-        artist, record = self.spotify_search(artist, record)
+        artist, record = self.album(artist, record)
         if not artist or not record:
             return "Cancelled."
 
@@ -148,22 +146,8 @@ class Storage:
         print("\n")
         for artist, albums in self._library.items():
             album_list = ", ".join(albums)
-            print(f"{artist}: {album_list}")
+            print(f"- {artist}: {album_list}")
         print("\nTotal number of Artists:", len(self._library))
         print("Total records:", sum(len(albums) for albums in self._library.values()))
 
-
-    #removed for menu simplicity
-    '''def total_albums(self) -> None:
-        print("\n")
-        for albums in self._library.values():
-            for album in albums:
-                print(f"- {album}")
-        print("Total records:", sum(len(albums) for albums in self._library.values()))
-    
-    def total_artists(self) -> None:
-        print("\n")
-        for artist in self._library.keys():
-            print(f"- {artist}")
-        print("Total number of Artists:", len(self._library))'''
     

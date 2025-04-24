@@ -1,5 +1,4 @@
 from storage import Storage
-from spotify_api import Spotify
 
 #not needed because gui
 def menu():
@@ -12,18 +11,22 @@ def menu():
 
 def add(storage: Storage):
     while True:
-        artist = input("What is the artist's name?\n")
-        record = input("What is the record's name?\n")
+        artist = input("What is the artist's name or type '00' to cancel: \n")
+        if artist == '00':
+            break
+        record = input("What is the record's name or type '00' to cancel: \n")
+        if record == '00':
+            break
         try:
             storage.add_album(artist, record)
         except ValueError as err:
             print(f"Error: {err}")
 
         clear = input("Add another album? y/n\n")
-        if clear.lower() == "n":
-            break
-        elif clear.lower() == "y":
+        if clear.lower() == "y":
             continue
+        else:
+            break
 
 def remove(storage: Storage):
     while True:

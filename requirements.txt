@@ -1,10 +1,11 @@
-async-timeout==5.0.1
 certifi==2025.1.31
 charset-normalizer==3.4.1
-customtkinter==5.2.2
-darkdetect==0.8.0
+coverage==7.8.0
 idna==3.10
-packaging==24.2
+iniconfig==2.1.0
+packaging==25.0
+pluggy==1.5.0
+pytest==8.3.5
 redis==5.2.1
 requests==2.32.3
 spotipy==2.25.1

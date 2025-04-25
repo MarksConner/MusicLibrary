@@ -33,6 +33,15 @@ class test_functions(unittest.TestCase):
             add(self.mock_storage)
         self.mock_storage.add_album.assert_not_called()
 
+    def test_add_multiple(self): #integration test now because github actions didnt like it before
+        storage = Storage(library={})
+        with patch("builtins.input", side_effect=["J. Cole", "2014 Forest Hills Drive", "1", "y", "Pierce the Veil", "Collide with the Sky", "1", "n"]):
+            add(storage)
+
+        self.assertIn("J. Cole", storage.library)
+        self.assertIn("2014 Forest Hills Drive", storage.library["J. Cole"])
+        self.assertIn("Pierce The Veil", storage.library)
+        self.assertIn("Collide With The Sky", storage.library["Pierce The Veil"])
 
 
     def test_remove(self):
@@ -40,6 +49,11 @@ class test_functions(unittest.TestCase):
             remove(self.mock_storage)
         self.mock_storage.remove_album.assert_called_once_with("J. Cole", "2014 Forest Hills Drive")
 
+    def test_remove_multiple(self): #integration test now because github actions didnt like it before
+        storage = Storage(library={"J. Cole": ["2014 Forest Hills Drive"], "Pierce The Veil": ["Collide With The Sky"]})
+        with patch("builtins.input", side_effect=["J. Cole", "2014 Forest Hills Drive", "1", "y", "Pierce The Veil", "Collide With The Sky", "1", "n"]):
+            remove(storage)
+        self.assertEqual(storage.library, {})
     
     def test_remove_cancel(self):
         with patch("builtins.input", side_effect=["00"]):

@@ -1,4 +1,5 @@
 from storage import Storage
+#test
 
 #not needed because gui
 def menu():

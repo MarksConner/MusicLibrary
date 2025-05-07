@@ -13,4 +13,4 @@ RUN pip install -r requirements.txt
 COPY codebase/ codebase/
 COPY codebase/library.json codebase/library.json
 
-CMD ["python", "main.py"]
+CMD ["python", "/codebase/main.py"]

@@ -1,0 +1,15 @@
+
+services:
+  vinyl_vault:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vinyl_vault-container
+    working_dir: /app/codebase
+    stdin_open: true
+    tty: true
+    env_file:
+      - .env
+    # ports:
+    #   - "8000:8000"
+    restart: unless-stopped

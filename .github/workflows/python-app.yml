@@ -55,7 +55,7 @@ jobs:
     - name: Push Docker image
       run: docker push conman4260/vinyl_vault:latest
 
-    - name: Save Docker image as artifact (optional)
+    - name: Save Docker image as artifact
       run: |
         docker save conman4260/vinyl_vault:latest -o vinyl_vault.tar
       continue-on-error: true
